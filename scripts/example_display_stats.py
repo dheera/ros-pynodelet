@@ -10,21 +10,20 @@ class Nodelet(pynodelet.Nodelet):
         pynodelet.Nodelet.__init__(*args, **kwargs)
         return
 
-    def callback_demo(self, msg):
+    def callback_stats(self, msg):
         """
         Multiply incoming floats by 100 and republish.
         """
         data = numpy.frombuffer(msg.data, dtype = np.float32)
 
-        msg2 = Float32MultiArray()
-        data2 = data.copy() * 100
-        msg2.data = data2
-        self.pub_demo2.publish(msg2)
+        rospy.loginfo("received an array of size %d with mean = %f std = %f" % \
+                (data.size, np.mean(data), np.std(data))
+        )
 
     def onInit(*args, **kwargs):
         pynodelet.Nodelet.onInit(*args, **kwargs)
 
-        pynodelet.Nodelet.Subscriber("/demo", Float32MultiArray, self.callback_demo)
-        self.pub_demo2 = pynodelet.Nodelet.Publisher("/demo2", Float32MultiArray, queue_size = 1)
+        pynodelet.Nodelet.Subscriber("foo_5", Float32MultiArray, self.callback_stats)
+        pynodelet.Nodelet.Subscriber("foo_1000", Float32MultiArray, self.callback_stats)
         rospy.spin()
 

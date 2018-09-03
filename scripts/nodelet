@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+from pynodelet import *
+from pynodelet_srv.srvs import NodeletLoad, NodeletUnload
+import sys
+import random
+import rospy
+
+def parse_args():
+    params = {}
+    for arg in sys.argv:
+        if ":=" in arg:
+            key, val = arg.split(":=")
+            params[key] = val
+    return params
+
+if __name__ == "__main__":
+    params = parse_args()
+
+    if sys.argv[1] == "manager":
+        name = params.get("__name", "nodelet_manager_%d" % random.randint(10000,99999))
+        rospy.init_node(name)
+        n = NodeletManager(name = name)
+        rospy.spin()
+
+    if sys.argv[1] == "load":
+        nodelet_pkg, nodelet_type = sys.argv[3].split('/')
+        manager_name = sys.argv[4]
+        nodelet_load = rospy.ServiceProxy('%s/nodelet_load' % manager_name, NodeletLoad)
+        result = nodelet_load(nodelet_pkg, nodelet_type, nodelet_name)
+        print(result)
+        # service call to manager_name to load nodelet_name
+
+    if sys.argv[1] == "unload":
+        nodelet_name = sys.argv[2]
+        manager_name = sys.argv[3]
+        nodelet_load = rospy.ServiceProxy('%s/nodelet_unload' % manager_name, NodeletUnLoad)
+        result = nodelet_unload(nodelet_name)
+        print(result)
+        # service call to manager_name to load nodelet_name
+
+    if sys.argv[1] == "standalone":
+        print("not implemented")
+

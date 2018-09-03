@@ -13,9 +13,11 @@ class Nodelet(pynodelet.Nodelet):
     def onInit(*args, **kwargs):
         pynodelet.Nodelet.onInit(*args, **kwargs)
 
-        self.pub_demo = pynodelet.Nodelet.Publisher("/demo", Float32MultiArray, queue_size = 1)
+        self.pub_demo = pynodelet.Nodelet.Publisher("foo", Float32MultiArray, queue_size = 1)
 
-        rate = rospy.Rate(1000)
+        # Generate 10000 random floats at a rate of 10Hz and publish it
+
+        rate = rospy.Rate(10)
         while rospy.is_shutdown():
             rate.sleep()
             msg = Float32MultiArray()

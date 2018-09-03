@@ -78,7 +78,7 @@ class NodeletPublisher(object):
 
 class NodeletManager(object):
 
-    def __init__(self, name = name):
+    def __init__(self, name = None):
         self.modules = {}
         self.publishers = {}
         self.subscribers = {}
@@ -103,24 +103,4 @@ class NodeletManager(object):
         p = NodeletPublisher(self, topic_name, topic_type, queue_size = queue_size)
         self.publishers[topic_name].append(p)
         return p
-
-if __name__ == "__main__":
-    if sys.argv[1] == "manager":
-        rospy.init_node("nodelet_manager_%d" % random.randint(100000, 999999))
-        name = rospy.get_param("name", "nodelet")
-        n = NodeletManager()
-        rospy.spin()
-
-    if sys.argv[1] == "load":
-        nodelet_type = sys.argv[2]
-        manager_name = sys.argv[3]
-        # service call to manager_name to load nodelet_name
-
-    if sys.argv[1] == "unload":
-        nodelet_name = sys.argv[2]
-        manager_name = sys.argv[3]
-        # service call to manager_name to load nodelet_name
-
-    if sys.argv[1] == "standalone":
-        print("not implemented")
 
